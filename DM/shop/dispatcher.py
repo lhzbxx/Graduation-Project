@@ -3,7 +3,7 @@
 # @Author: LuHao
 # @Date:   2015-12-05 06:05:08
 # @Last Modified by:   LuHao
-# @Last Modified time: 2015-12-05 07:08:11
+# @Last Modified time: 2015-12-05 07:35:29
 
 
 import parser
@@ -14,76 +14,55 @@ import Queue
 import threading
 import time
 
-class Dispatcher(threading.Thread):
-    recorder = ''
-    queue = []
-    def __init__(self):
-        self.recorder = recorder.Recorder()
-        for i in THREAD_NUM:
-            i += 1
-            self.queue.push(i)
-    def dispatch():
-        while(self.queue[THREAD_NUM-1] <= MAX_PAGE_NUM):
-            i = self.queue.pop()
-            if parser.
-            parser.Parser()
-            self.recorder.
-
-
-
-
-exitFlag = 0
-
-class myThread (threading.Thread):
-    def __init__(self, threadID, name, q):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.q = q
-    def run(self):
-        print "Starting " + self.name
-        process_data(self.name, self.q)
-        print "Exiting " + self.name
-
-def process_data(threadName, q):
-    while not exitFlag:
-        queueLock.acquire()
-        if not workQueue.empty():
-            data = q.get()
-            queueLock.release()
-            print "%s processing %s" % (threadName, data)
-        else:
-            queueLock.release()
-        time.sleep(1)
-
-threadList = ["Thread-1", "Thread-2", "Thread-3"]
-nameList = ["One", "Two", "Three", "Four", "Five"]
-queueLock = threading.Lock()
-workQueue = Queue.Queue(10)
+exit_flag = 0
+work_queue = []
+queue_lock = threading.Lock()
 threads = []
-threadID = 1
+blank_page = 0
+good_page = 0
 
-# 创建新线程
-for tName in threadList:
-    thread = myThread(threadID, tName, workQueue)
+process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page)
+
+for i in config.THREAD_NUM:
+    i += 1
+    work_queue.push(i)
+
+class Dispatcher(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.recorder = recorder.Recorder()
+    def run(self):
+        while not exit_flag:
+            queue_lock.acquire()
+            if not work_queue.empty():
+                parser = Parser()
+                con = parser.parse()
+                if(con):
+                    self.recorder.record(id, content)
+                    update_msg('good')
+                else:
+                    update_msg('blank')
+            queueLock.release()
+
+def update_msg(msg):
+    print '\b' * len(process_msg),
+    if msg == 'good':
+        good_page += 1
+    if msg == 'blank':
+        blank_page += 1
+    process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page)
+
+for i in config.THREAD_NUM:
+    thread = Dispatcher()
     thread.start()
     threads.append(thread)
-    threadID += 1
 
-# 填充队列
-queueLock.acquire()
-for word in nameList:
-    workQueue.put(word)
-queueLock.release()
-
-# 等待队列清空
-while not workQueue.empty():
+while work_queue[config.THREAD_NUM-1] <= config.MAX_PAGE_NUM:
     pass
 
-# 通知线程是时候退出
-exitFlag = 1
+exit_flag = 1
 
-# 等待所有线程完成
+print "End at: " + str(time.time())
+
 for t in threads:
     t.join()
-print "Exiting Main Thread"
