@@ -3,12 +3,11 @@
 # @Author: LuHao
 # @Date:   2015-12-05 03:24:49
 # @Last Modified by:   LuHao
-# @Last Modified time: 2015-12-05 06:09:04
+# @Last Modified time: 2015-12-05 06:52:23
 
 from bs4 import BeautifulSoup
 import requests
 import time
-import record
 
 
 class Parser():

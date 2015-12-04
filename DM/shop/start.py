@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author: LuHao
-# @Date:   2015-12-05 06:19:23
+# @Date:   2015-12-05 06:25:14
 # @Last Modified by:   LuHao
-# @Last Modified time: 2015-12-05 06:20:34
+# @Last Modified time: 2015-12-05 06:53:49
 
-
-import os
+import dispatcher
 
 def main():
-    os.remove(os.path.join(root, name))
-
+    d = Dispatcher()
+    d.dispatch()
 
 if __name__ == '__main__':
     main()
