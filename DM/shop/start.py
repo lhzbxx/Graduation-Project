@@ -3,14 +3,15 @@
 # @Author: LuHao
 # @Date:   2015-12-05 06:25:14
 # @Last Modified by:   LuHao
-# @Last Modified time: 2015-12-05 07:16:08
+# @Last Modified time: 2015-12-05 08:00:13
 
 import dispatcher
+import time
 
 def main():
-    d = Dispatcher()
-    d.dispatch()
+    print "Begin at: " + str(time.time())
+    # d = Dispatcher()
+    # d.dispatch()
 
 if __name__ == '__main__':
-    print "Begin at: " + str(time.time())
     main()
