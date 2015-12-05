@@ -3,13 +3,13 @@
 # @Author: LuHao
 # @Date:   2015-12-05 06:25:14
 # @Last Modified by:   LuHao
-# @Last Modified time: 2015-12-05 08:00:13
+# @Last Modified time: 2015-12-05 08:15:36
 
-import dispatcher
 import time
 
 def main():
     print "Begin at: " + str(time.time())
+    import dispatcher
     # d = Dispatcher()
     # d.dispatch()
 

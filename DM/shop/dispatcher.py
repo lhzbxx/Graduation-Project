@@ -3,7 +3,7 @@
 # @Author: LuHao
 # @Date:   2015-12-05 06:05:08
 # @Last Modified by:   LuHao
-# @Last Modified time: 2015-12-05 07:57:01
+# @Last Modified time: 2015-12-05 08:20:30
 
 
 import parser2
@@ -13,6 +13,37 @@ import config
 import Queue
 import threading
 import time
+
+class Dispatcher(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.recorder = recorder.Recorder()
+    def run(self):
+        while not exit_flag:
+            if work_queue:
+                queue_lock.acquire()
+                process_data()
+                queueLock.release()
+                p = parser2.Parser(id)
+                con = p.parse()
+                if(con):
+                    self.recorder.record(id, con)
+                    update_msg('good')
+                else:
+                    update_msg('blank')
+
+def process_data():
+    id = work_queue.pop()
+    work_process += 1
+    work_queue.append(work_process)
+
+def update_msg(msg):
+    print '\b' * len(process_msg),
+    if msg == 'good':
+        good_page += 1
+    if msg == 'blank':
+        blank_page += 1
+    process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page) + '\n' + str(work_queue)
 
 exit_flag = 0
 work_queue = []
@@ -27,34 +58,6 @@ process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page) 
 for i in range(config.THREAD_NUM):
     i += 1
     work_queue.append(i)
-
-class Dispatcher(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.recorder = recorder.Recorder()
-    def run(self):
-        while not exit_flag:
-            queue_lock.acquire()
-            id = work_queue.pop()
-            work_process += 1
-            work_queue.append(work_process)
-            queueLock.release()
-            if work_queue:
-                p = parser2.Parser(id)
-                con = p.parse()
-                if(con):
-                    self.recorder.record(id, con)
-                    update_msg('good')
-                else:
-                    update_msg('blank')
-
-def update_msg(msg):
-    print '\b' * len(process_msg),
-    if msg == 'good':
-        good_page += 1
-    if msg == 'blank':
-        blank_page += 1
-    process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page) + '\n' + str(work_queue)
 
 for i in range(config.THREAD_NUM):
     thread = Dispatcher()
