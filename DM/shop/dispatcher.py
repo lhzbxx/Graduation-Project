@@ -3,10 +3,10 @@
 # @Author: LuHao
 # @Date:   2015-12-05 06:05:08
 # @Last Modified by:   LuHao
-# @Last Modified time: 2015-12-05 08:20:30
+# @Last Modified time: 2015-12-05 09:05:55
 
 
-import parser2
+import parser3
 import recorder
 import config
 
@@ -20,22 +20,18 @@ class Dispatcher(threading.Thread):
         self.recorder = recorder.Recorder()
     def run(self):
         while not exit_flag:
-            if work_queue:
-                queue_lock.acquire()
-                process_data()
-                queueLock.release()
-                p = parser2.Parser(id)
-                con = p.parse()
-                if(con):
-                    self.recorder.record(id, con)
-                    update_msg('good')
-                else:
-                    update_msg('blank')
-
-def process_data():
-    id = work_queue.pop()
-    work_process += 1
-    work_queue.append(work_process)
+            global work_process
+            queue_lock.acquire()
+            shop_id = work_process
+            work_process += 1
+            queue_lock.release()
+            p = parser3.Parser(shop_id)
+            a = p.parse()
+            if(con):
+                self.recorder.record(shop_id, con)
+                update_msg('good')
+            else:
+                update_msg('blank')
 
 def update_msg(msg):
     print '\b' * len(process_msg),
@@ -43,21 +39,17 @@ def update_msg(msg):
         good_page += 1
     if msg == 'blank':
         blank_page += 1
-    process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page) + '\n' + str(work_queue)
+    process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page)
+    print process_msg
 
 exit_flag = 0
-work_queue = []
 queue_lock = threading.Lock()
 threads = []
 blank_page = 0
 good_page = 0
-work_process = config.THREAD_NUM
+work_process = 1
 
-process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page) + '\n' + str(work_queue)
-
-for i in range(config.THREAD_NUM):
-    i += 1
-    work_queue.append(i)
+process_msg = 'blank_page:' + str(blank_page) + '\ngood_page:' + str(good_page)
 
 for i in range(config.THREAD_NUM):
     thread = Dispatcher()
@@ -65,7 +57,7 @@ for i in range(config.THREAD_NUM):
     threads.append(thread)
 
 while work_process <= config.MAX_PAGE_NUM:
-    pass
+    time.sleep(0.001)
 
 exit_flag = 1
 
